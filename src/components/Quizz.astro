@@ -1,42 +1,70 @@
 
   <main>
-<h1>Bienvenido al Quiz 1</h1>
+  <div class="quiz-wrapper">
+    <h1>🎯 Quiz Interactivo</h1>
+    <div id="quiz-container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+      </div>
+      
+      <form id="quiz-form">
+        <div class="question">
+          <p><span class="question-number">1</span>¿Cuál es la capital de Francia?</p>
+          <label class="option" data-question="q1" data-value="a">
+            <input type="radio" name="q1" value="a">
+            <span class="option-content">Madrid</span>
+          </label>
+          <label class="option" data-question="q1" data-value="b">
+            <input type="radio" name="q1" value="b">
+            <span class="option-content">París</span>
+          </label>
+          <label class="option" data-question="q1" data-value="c">
+            <input type="radio" name="q1" value="c">
+            <span class="option-content">Berlín</span>
+          </label>
+        </div>
 
-<div id="quiz-container">
-  <form id="quiz-form">
-    <div class="question">
-      <p>1. ¿Cuál es la capital de Francia?</p>
-      <label><input type="radio" name="q1" value="a"> Madrid</label><br>
-      <label><input type="radio" name="q1" value="b"> París</label><br>
-      <label><input type="radio" name="q1" value="c"> Berlín</label>
-    </div>
-    <div class="question">
-      <p>2. ¿Qué es 2 + 2?</p>
-      <label><input type="radio" name="q2" value="a"> 3</label><br>
-      <label><input type="radio" name="q2" value="b"> 4</label><br>
-      <label><input type="radio" name="q2" value="c"> 5</label>
-    </div>
-    <div class="question">
-      <p>3. ¿Color del cielo en un día claro?</p>
-      <label><input type="radio" name="q3" value="a"> Azul</label><br>
-      <label><input type="radio" name="q3" value="b"> Rojo</label><br>
-      <label><input type="radio" name="q3" value="c"> Verde</label>
-    </div>
-    <button type="submit" class="boton-primario">Enviar Respuestas</button>
-  </form>
-  <p id="result"></p>
-</div>
+        <div class="question">
+          <p><span class="question-number">2</span>¿Qué es 2 + 2?</p>
+          <label class="option" data-question="q2" data-value="a">
+            <input type="radio" name="q2" value="a">
+            <span class="option-content">3</span>
+          </label>
+          <label class="option" data-question="q2" data-value="b">
+            <input type="radio" name="q2" value="b">
+            <span class="option-content">4</span>
+          </label>
+          <label class="option" data-question="q2" data-value="c">
+            <input type="radio" name="q2" value="c">
+            <span class="option-content">5</span>
+          </label>
+        </div>
 
-<script>
-  document.getElementById('quiz-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const answers = { q1: 'b', q2: 'b', q3: 'a' }; // Respuestas correctas
-    let score = 0;
-    const formData = new FormData(e.target);
-    for (let [key, value] of formData.entries()) {
-      if (value === answers[key]) score++;
-    }
-    document.getElementById('result').textContent = `Puntaje: ${score}/3`;
-  });
-</script>
+        <div class="question">
+          <p><span class="question-number">3</span>¿Color del cielo en un día claro?</p>
+          <label class="option" data-question="q3" data-value="a">
+            <input type="radio" name="q3" value="a">
+            <span class="option-content">Azul</span>
+          </label>
+          <label class="option" data-question="q3" data-value="b">
+            <input type="radio" name="q3" value="b">
+            <span class="option-content">Rojo</span>
+          </label>
+          <label class="option" data-question="q3" data-value="c">
+            <input type="radio" name="q3" value="c">
+            <span class="option-content">Verde</span>
+          </label>
+        </div>
+      </form>
+      
+      <div id="result"></div>
+      
+      <div class="button-container">
+        <button id="reset-btn" class="boton-secundario" style="display: none;">Reiniciar</button>
+        <button id="next-btn" class="boton-primario" style="display: none;">Siguiente</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../scripts/quiz1.js"></script>
 </main>

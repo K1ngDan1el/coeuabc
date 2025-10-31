@@ -20,7 +20,7 @@ body {
   grid-template-rows: auto 1fr auto;
   min-height: 100vh;
   margin: 0;
-  background: linear-gradient(45deg, #a78000b4, #f1b9009f);
+  background: linear-gradient(45deg, #ffffffb4, #ffdc6a9f);
   font-family: "PixelifySans", monospace;
   -webkit-font-smoothing: none; /* evita suavizado en tipografía pixel */
   image-rendering: pixelated;
@@ -124,7 +124,7 @@ a[class^="boton-"] {
 .boton-primario {
   background-color: #aca542;
   color: #f7e4a7;
-  border-color: #f1b900;
+  border-color: #ffffff;
   font-size: 40px;
   box-shadow: 4px 4px 0 #886902;
 }
