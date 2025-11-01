@@ -1,0 +1,51 @@
+/* src/styles/timer.css */
+
+/* 1. Contenedor del timer (el 'vidrio') */
+#timer-sidebar {
+  display: none; /* Oculto en móvil por defecto */
+  text-align: center;
+}
+
+#timer-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 240px; 
+  box-sizing: border-box;
+}
+
+#timer-container canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+/* 2. En pantallas grandes, cambiamos el layout de 'main' */
+@media (min-width: 1024px) {
+  /* global.css define 'main' como 'display: flex' y 'flex-direction: column'.
+    Aquí lo cambiamos a 'row' para crear las 2 columnas.
+  */
+  main {
+    flex-direction: row;
+    align-items: flex-start; /* Alinea arriba */
+    justify-content: center;
+    gap: 40px;
+  }
+
+  /* Hacemos que el quiz-wrapper tome el espacio principal */
+  .quiz-wrapper {
+    flex-grow: 1;
+  }
+
+  /* Mostramos y "pegamos" el timer */
+  #timer-sidebar {
+    display: block; /* Mostrar en desktop */
+    position: -webkit-sticky; 
+    position: sticky; 
+    top: 40px; /* Se pega a 40px del borde superior */
+    flex-shrink: 0;
+  }
+}
