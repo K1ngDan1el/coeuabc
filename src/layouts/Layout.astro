@@ -1,5 +1,4 @@
 --- 
-
 ---
 <!doctype html>
 <html lang="en">
@@ -9,14 +8,15 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="description" content="COE - Center of Excellence" />
 		<title>COE</title>
-	</head>
+		
+		</head>
+	
 	<body>
 		<slot />
 	</body>
 </html>
 
 <style is:global>
-	@import 'tailwindcss';
-	@plugin "@midudev/tailwind-animations";
-	
+	@import '../styles/global.css';
+	@import tailwindcss;
 </style>

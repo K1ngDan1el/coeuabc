@@ -2,7 +2,6 @@
    IMPORTS Y FUENTES
 -------------------------- */
 @import "tailwindcss";
-@plugin "@midudev/tailwind-animations";
 
 @font-face {
   font-family: "PixelifySans";
@@ -39,6 +38,13 @@ main {
   box-sizing: border-box;
 }
 
+.discurso {
+  font-size: 50px;
+  font-weight: bolder;
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
 /* -------------------------
    HEADER GLASS
 -------------------------- */

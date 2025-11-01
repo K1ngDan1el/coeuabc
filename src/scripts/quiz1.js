@@ -1,42 +1,97 @@
-// quiz1.js
+/* src/scripts/quiz1.js (Combinado con Timer) */
 
-// Respuestas correctas
+// --- CONFIGURACIÓN DEL TIMER ---
+const TOTAL_TIME_SECONDS = 60; // ¡Tiempo total para el quiz!
+// -----------------------------
+
+// --- Elementos del Quiz ---
 const answers = { q1: 'b', q2: 'b', q3: 'a' };
-
-// Variables de control
 let totalAnswered = 0;
 let score = 0;
 const totalQuestions = Object.keys(answers).length;
-const progressBar = document.getElementById('progress');
 const resultDiv = document.getElementById('result');
 const resetBtn = document.getElementById('reset-btn');
 const nextBtn = document.getElementById('next-btn');
+const quizContainer = document.getElementById('quiz-container');
+const allOptions = document.querySelectorAll('.option');
 
-// Función para actualizar la barra de progreso
-function updateProgress() {
-  const percentage = (totalAnswered / totalQuestions) * 100;
-  progressBar.style.width = percentage + '%';
+// --- Elementos del Timer ---
+const timerBar = document.getElementById('timer-bar');
+const timerText = document.getElementById('timer-text');
+let timeLeft = TOTAL_TIME_SECONDS;
+let timerInterval = null;
+
+// --- FUNCIONES DEL TIMER ---
+function startTimer() {
+  timeLeft = TOTAL_TIME_SECONDS;
+  if (timerInterval) clearInterval(timerInterval);
+  updateTimerDisplay();
+  checkTimeEffects();
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    checkTimeEffects();
+
+    if (timeLeft <= 0) {
+      showFinalResult(true); // Se acabó el tiempo
+    }
+  }, 1000);
 }
 
-// Función para verificar respuesta
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function updateTimerDisplay() {
+  if (!timerBar) return; // Seguridad
+  // Actualiza la barra
+  const percentage = (timeLeft / TOTAL_TIME_SECONDS) * 100;
+  timerBar.style.width = percentage + '%';
+
+  // Actualiza el texto
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  timerText.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
+function checkTimeEffects() {
+  if (!quizContainer) return; // Seguridad
+  if (timeLeft <= 10) { // 🚨 Peligro
+    quizContainer.classList.remove('timer-warning');
+    quizContainer.classList.add('timer-danger');
+    if (timerBar) timerBar.style.background = 'linear-gradient(90deg, #dc3545, #f85768)';
+  } else if (timeLeft <= 20) { // ⚠️ Advertencia
+    quizContainer.classList.add('timer-warning');
+    if (timerBar) timerBar.style.background = 'linear-gradient(90deg, #ffc107, #ffeb3b)';
+  } else { // Normal
+    quizContainer.classList.remove('timer-warning', 'timer-danger');
+    if (timerBar) timerBar.style.background = 'linear-gradient(90deg, #28a745, #5cdd7c)';
+  }
+}
+
+// --- FUNCIONES DEL QUIZ (Modificadas) ---
 function checkAnswer(questionName, selectedValue, optionElement) {
+  if (!timerInterval) return; // No hacer nada si el tiempo ya se acabó
+
   const correctAnswer = answers[questionName];
-  const allOptions = document.querySelectorAll(`[data-question="${questionName}"]`);
+  const questionOptions = document.querySelectorAll(`[data-question="${questionName}"]`);
   
-  // Deshabilitar todas las opciones de esta pregunta
-  allOptions.forEach(opt => {
+  // Deshabilita todas las opciones de esta pregunta
+  questionOptions.forEach(opt => {
     opt.classList.add('disabled');
     opt.style.pointerEvents = 'none';
   });
   
-  // Marcar la respuesta correcta en verde
-  allOptions.forEach(opt => {
+  // Muestra la correcta
+  questionOptions.forEach(opt => {
     if (opt.dataset.value === correctAnswer) {
       opt.classList.add('correct');
     }
   });
   
-  // Si la respuesta seleccionada es incorrecta, marcarla en rojo
+  // Marca la incorrecta (si es el caso)
   if (selectedValue !== correctAnswer) {
     optionElement.classList.add('incorrect');
   } else {
@@ -44,20 +99,23 @@ function checkAnswer(questionName, selectedValue, optionElement) {
   }
   
   totalAnswered++;
-  updateProgress();
   
-  // Mostrar resultado final si se han respondido todas las preguntas
+  // Revisa si ya se terminó
   if (totalAnswered === totalQuestions) {
-    showFinalResult();
+    showFinalResult(false); // Completó antes de tiempo
   }
 }
 
-// Función para mostrar resultado final
-function showFinalResult() {
-  let emoji = '🎉';
-  let message = '¡Perfecto!';
+function showFinalResult(isTimeUp) {
+  stopTimer(); // ¡DETIENE EL RELOJ!
   
-  if (score === 3) {
+  let emoji = '🎉';
+  let message = '¡Genial!';
+
+  if (isTimeUp) {
+    emoji = '⌛';
+    message = '¡Se acabó el tiempo!';
+  } else if (score === 3) {
     emoji = '🏆';
     message = '¡Perfecto!';
   } else if (score === 2) {
@@ -71,73 +129,82 @@ function showFinalResult() {
     message = '¡Sigue practicando!';
   }
   
-  resultDiv.innerHTML = `
-    <span class="score-emoji">${emoji}</span>
-    ${message}<br>
-    Puntaje: ${score}/${totalQuestions}
-  `;
-  resultDiv.style.display = 'block';
+  if (resultDiv) {
+    resultDiv.innerHTML = `
+      <span class="score-emoji">${emoji}</span>
+      ${message}<br>
+      Puntaje: ${score}/${totalQuestions}
+    `;
+    resultDiv.style.display = 'block';
+  }
   
-  // Mostrar botones
-  resetBtn.style.display = 'block';
-  nextBtn.style.display = 'block';
-  
-  // Scroll suave hacia el resultado
-  resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Deshabilitar todas las opciones por si se acabó el tiempo
+  allOptions.forEach(opt => {
+    opt.classList.add('disabled');
+    opt.style.pointerEvents = 'none';
+  });
+
+  // MUESTRA LOS BOTONES
+  if (resetBtn) resetBtn.style.display = 'block';
+  if (nextBtn) nextBtn.style.display = 'block';
+
+  // --- ¡AQUÍ ESTÁ LA LÍNEA QUE PEDISTE! ---
+  if (nextBtn) nextBtn.disabled = isTimeUp;
+
+  if (resultDiv) resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// Función para reiniciar el quiz
 function resetQuiz() {
-  // Reiniciar variables
   totalAnswered = 0;
   score = 0;
   
-  // Limpiar todas las opciones
-  const allOptions = document.querySelectorAll('.option');
+  // Vuelve a habilitar el botón 'Siguiente'
+  if (nextBtn) nextBtn.disabled = false;
+
   allOptions.forEach(opt => {
     opt.classList.remove('correct', 'incorrect', 'disabled');
     opt.style.pointerEvents = 'auto';
     const radio = opt.querySelector('input[type="radio"]');
-    radio.checked = false;
+    if (radio) radio.checked = false;
   });
   
-  // Ocultar resultado y botones
-  resultDiv.style.display = 'none';
-  resetBtn.style.display = 'none';
-  nextBtn.style.display = 'none';
+  if (resultDiv) resultDiv.style.display = 'none';
+  if (resetBtn) resetBtn.style.display = 'none';
+  if (nextBtn) nextBtn.style.display = 'none';
   
-  // Resetear barra de progreso
-  progressBar.style.width = '0%';
+  if (quizContainer) quizContainer.classList.remove('timer-warning', 'timer-danger');
   
-  // Scroll al inicio
+  startTimer(); // Reinicia el timer
+  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Event listeners para las opciones
-document.querySelectorAll('.option').forEach(option => {
-  option.addEventListener('click', function(e) {
-    // Si ya está deshabilitada, no hacer nada
-    if (this.classList.contains('disabled')) {
-      return;
-    }
-    
-    const radio = this.querySelector('input[type="radio"]');
-    const questionName = this.dataset.question;
-    const selectedValue = this.dataset.value;
-    
-    // Marcar el radio button
-    radio.checked = true;
-    
-    // Verificar respuesta inmediatamente
-    checkAnswer(questionName, selectedValue, this);
+// --- INICIO Y EVENTOS ---
+// Nos aseguramos que el DOM esté cargado antes de asignar eventos
+document.addEventListener('DOMContentLoaded', (event) => {
+  // Asignar eventos a las opciones
+  document.querySelectorAll('.option').forEach(option => {
+    option.addEventListener('click', function(e) {
+      if (this.classList.contains('disabled')) return;
+      const radio = this.querySelector('input[type="radio"]');
+      if (radio) {
+        radio.checked = true;
+        const questionName = this.dataset.question;
+        const selectedValue = this.dataset.value;
+        checkAnswer(questionName, selectedValue, this);
+      }
+    });
   });
-});
 
-// Event listener para botón de reiniciar
-resetBtn.addEventListener('click', resetQuiz);
+  // Asignar eventos a los botones
+  const resetBtnEl = document.getElementById('reset-btn');
+  const nextBtnEl = document.getElementById('next-btn');
 
-// Event listener para botón siguiente (puedes personalizarlo)
-nextBtn.addEventListener('click', () => {
-  alert('Función "Siguiente" - Aquí puedes redirigir al siguiente quiz');
-  // Ejemplo: window.location.href = 'quiz2.html';
+  if (resetBtnEl) resetBtnEl.addEventListener('click', resetQuiz);
+  if (nextBtnEl) nextBtnEl.addEventListener('click', () => {
+    alert('Función "Siguiente" - Aquí puedes redirigir');
+  });
+
+  // ¡Empezar el timer al cargar!
+  startTimer();
 });
