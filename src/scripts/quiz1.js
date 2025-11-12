@@ -1,7 +1,7 @@
 /* src/scripts/quiz1.js (Con Pistas como Texto) */
 
 // --- CONFIGURACIÓN DEL TIMER ---
-const TOTAL_TIME_SECONDS = 300; // 5 minutos
+const TOTAL_TIME_SECONDS = 120; // 5 minutos
 const HINTS_UNLOCK_TIME = TOTAL_TIME_SECONDS / 2;
 // -----------------------------
 
