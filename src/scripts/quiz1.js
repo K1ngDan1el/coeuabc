@@ -1,7 +1,7 @@
-/* src/scripts/quiz1.js (Con Pistas como Texto) */
+/* src/scripts/quiz1.js (Con Pistas, Sonidos y Música de Fondo Única) */
 
 // --- CONFIGURACIÓN DEL TIMER ---
-const TOTAL_TIME_SECONDS = 120; // 5 minutos
+const TOTAL_TIME_SECONDS = 150; // 5 minutos
 const HINTS_UNLOCK_TIME = TOTAL_TIME_SECONDS / 2;
 // -----------------------------
 
@@ -28,6 +28,22 @@ const hints = {
   q19: 'Menos es más. Elige solo tus puntos clave.',
   q20: 'Una "Llamada a la acción" debe ser directa y clara.'
 };
+
+// === INICIO: AÑADIR SONIDOS ===
+// Efectos de Sonido
+const soundCorrect = new Audio('/Sounds/sonido-correcto.mp3');
+const soundIncorrect = new Audio('/Sounds/sonido-incorrecto.mp3');
+const soundTimeUp = new Audio('/Sounds/tiempo-fuera.mp3');
+const soundWarning = new Audio('/Sounds/advertencia.mp3');
+
+// === MÚSICA DE FONDO: Carga el archivo ===
+const musicBackground = new Audio('/Sounds/musica-fondo.mp3'); // <-- CAMBIA 'musica-fondo.mp3' si tu archivo se llama diferente
+musicBackground.loop = false; // <-- No está en loop
+musicBackground.volume = 0.5; // Opcional: ajusta el volumen (0.0 a 1.0)
+
+let isMusicStarted = false; // Controla si la música ya empezó
+// === FIN: AÑADIR SONIDOS ===
+
 
 // --- Elementos del Quiz ---
 const answers = {
@@ -57,6 +73,7 @@ let hintsUnlocked = false;
 function startTimer() {
   timeLeft = TOTAL_TIME_SECONDS;
   hintsUnlocked = false;
+  isMusicStarted = false; // <--- CAMBIO: Resetea el control de la música
   if (timerInterval) clearInterval(timerInterval);
   updateTimerDisplay();
   checkTimeEffects();
@@ -65,6 +82,13 @@ function startTimer() {
     timeLeft--;
     updateTimerDisplay();
     checkTimeEffects();
+
+    // === MÚSICA DE FONDO: Inicia a los 120 segundos ===
+    if (timeLeft === 85 && !isMusicStarted) {
+        musicBackground.play().catch(e => console.error("Error al iniciar música:", e));
+        isMusicStarted = true;
+    }
+    // === FIN: Inicio de música ===
 
     if (!hintsUnlocked && timeLeft <= HINTS_UNLOCK_TIME) {
       unlockHints();
@@ -97,9 +121,19 @@ function checkTimeEffects() {
     quizContainer.classList.remove('timer-warning');
     quizContainer.classList.add('timer-danger');
     if (timerBar) timerBar.style.background = 'linear-gradient(90deg, #dc3545, #f85768)';
+    
+    if (timeLeft === 20) { // Suena solo una vez al llegar a 20
+        soundWarning.play();
+    }
+    
   } else if (timeLeft <= 60) {
     quizContainer.classList.add('timer-warning');
     if (timerBar) timerBar.style.background = 'linear-gradient(90deg, #ffc107, #ffeb3b)';
+    
+    if (timeLeft === 60) { // Suena solo una vez al llegar a 60
+        soundWarning.play();
+    }
+
   } else {
     quizContainer.classList.remove('timer-warning', 'timer-danger');
     if (timerBar) timerBar.style.background = 'linear-gradient(90deg, #28a745, #5cdd7c)';
@@ -142,6 +176,7 @@ function showHint(event) {
 
 // --- FUNCIONES DEL QUIZ (Modificadas) ---
 function checkAnswer(questionName, selectedValue, optionElement) {
+  
   if (!timerInterval) return;
 
   const correctAnswer = answers[questionName];
@@ -166,8 +201,10 @@ function checkAnswer(questionName, selectedValue, optionElement) {
   
   if (selectedValue !== correctAnswer) {
     optionElement.classList.add('incorrect');
+    soundIncorrect.play();
   } else {
     score++;
+    soundCorrect.play();
   }
   
   totalAnswered++;
@@ -180,6 +217,12 @@ function checkAnswer(questionName, selectedValue, optionElement) {
 function showFinalResult(isTimeUp) {
   stopTimer(); 
   
+  // === MÚSICA DE FONDO: Detiene toda la música ===
+  musicBackground.pause();
+  musicBackground.currentTime = 0;
+  isMusicStarted = false;
+  // === FIN: Detener música ===
+  
   let emoji = '🎉';
   let message = '¡Genial!';
   const percentage = (score / totalQuestions) * 100;
@@ -188,6 +231,7 @@ function showFinalResult(isTimeUp) {
   if (isTimeUp) {
     emoji = '⌛';
     message = '¡Se acabó el tiempo!';
+    soundTimeUp.play();
   } else if (percentage === 100) {
     emoji = '🏆';
     message = '¡Perfecto!';
@@ -225,6 +269,12 @@ function showFinalResult(isTimeUp) {
 
 // --- FUNCIÓN DE RESET (¡MODIFICADA!) ---
 function resetQuiz() {
+  // === MÚSICA DE FONDO: Resetea la música ===
+  musicBackground.pause();
+  musicBackground.currentTime = 0;
+  isMusicStarted = false; // Se prepara para el próximo inicio en 120s
+  // === FIN: Reseteo de música ===
+
   totalAnswered = 0;
   score = 0;
   
@@ -287,5 +337,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     btn.addEventListener('click', showHint);
   });
 
+  // CAMBIO: Ya no se inicia la música aquí, se inicia en el timer
+  
   startTimer();
 });
