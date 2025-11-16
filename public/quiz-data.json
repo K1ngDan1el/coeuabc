@@ -1,0 +1,222 @@
+[
+  {
+    "id": "q1",
+    "question": "¿Qué se entiende por “discurso”?",
+    "hint": "La respuesta menciona 'intención comunicativa'.",
+    "correctAnswer": "c",
+    "options": [
+      { "value": "a", "text": "Un listado de instrucciones." },
+      { "value": "b", "text": "Una conversación privada." },
+      { "value": "c", "text": "Un enunciado con intención comunicativa." }
+    ]
+  },
+  {
+    "id": "q2",
+    "question": "Menciona tres fines principales de un discurso.",
+    "hint": "Son los tres propósitos clásicos de la oratoria.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Recitar, improvisar, silenciar." },
+      { "value": "b", "text": "Social, informativo, persuasivo." },
+      { "value": "c", "text": "Escribir, leer, olvidar." }
+    ]
+  },
+  {
+    "id": "q3",
+    "question": "¿Cuáles son las tres partes básicas de la estructura de un discurso?",
+    "hint": "No es 'inicio, mitad, final', eso es muy simple.",
+    "correctAnswer": "c",
+    "options": [
+      { "value": "a", "text": "Inicio, mitad, final." },
+      { "value": "b", "text": "Presentación, ejemplos, preguntas." },
+      { "value": "c", "text": "Introducción, desarrollo, conclusión." }
+    ]
+  },
+  {
+    "id": "q4",
+    "question": "Da dos técnicas efectivas para captar la atención en la introducción.",
+    "hint": "Una es personal (anécdota) y la otra es una pregunta al aire.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Leer un índice y enumerar." },
+      { "value": "b", "text": "Contar una anécdota y hacer una pregunta retórica." },
+      { "value": "c", "text": "Hablar en voz baja y mirar al techo." }
+    ]
+  },
+  {
+    "id": "q5",
+    "question": "¿Qué es la “experiencia vicaria”?",
+    "hint": "Viene de 'vicario', que significa 'en lugar de otro'. Es sentir lo que otro siente.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Explicar procesos largos." },
+      { "value": "b", "text": "Hacer que la audiencia imagine sensaciones." },
+      { "value": "c", "text": "Repetir citas textuales." }
+    ]
+  },
+  {
+    "id": "q6",
+    "question": "Verdadero o falso: un discurso informativo debe priorizar la objetividad.",
+    "hint": "Si quieres informar, no debes dar tu opinión personal.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Falso." },
+      { "value": "b", "text": "Verdadero." },
+      { "value": "c", "text": "Siempre persuasivo." }
+    ]
+  },
+  {
+    "id": "q7",
+    "question": "¿Cuál es el orden de la secuencia motivadora de Monroe?",
+    "hint": "Todo empieza por... ¡llamar la...",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Necesidad → Acción → Atención → Visualización → Satisfacción." },
+      { "value": "b", "text": "Atención → Necesidad → Satisfacción → Visualización → Acción." },
+      { "value": "c", "text": "Acción → Atención → Satisfacción → Necesidad → Visualización." }
+    ]
+  },
+  {
+    "id": "q8",
+    "question": "¿Qué elementos debes analizar sobre el público?",
+    "hint": "Necesitas saber a quién le hablas: edad, cultura, y qué piensan.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Solo su edad." },
+      { "value": "b", "text": "Demografía, conocimiento, actitudes." },
+      { "value": "c", "text": "El color de su ropa." }
+    ]
+  },
+  {
+    "id": "q9",
+    "question": "Nombra un tipo de discurso para “ocasiones especiales”.",
+    "hint": "Uno que se da en un funeral, una boda o una celebración.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Instructivo técnico." },
+      { "value": "b", "text": "Elogio." },
+      { "value": "c", "text": "Informe contable." }
+    ]
+  },
+  {
+    "id": "q10",
+    "question": "¿Diferencia principal entre persuasivo e informativo?",
+    "hint": "La respuesta está literalmente en las dos palabras.",
+    "correctAnswer": "a",
+    "options": [
+      { "value": "a", "text": "El persuasivo busca convencer; el informativo busca informar." },
+      { "value": "b", "text": "El informativo es siempre más corto." },
+      { "value": "c", "text": "No hay diferencia." }
+    ]
+  },
+  {
+    "id": "q11",
+    "question": "Ejemplo de gancho para entretenimiento:",
+    "hint": "¿Qué frase suena más como el inicio de una historia divertida?",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "“Aquí van mis diapositivas.”" },
+      { "value": "b", "text": "“¿Se acuerdan de la vez que todo salió mal…?”" },
+      { "value": "c", "text": "“Lista de referencias al final.”" }
+    ]
+  },
+  {
+    "id": "q12",
+    "question": "¿Qué papel tiene la ética en la persuasión?",
+    "hint": "Persuadir no es lo mismo que manipular.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Permite manipular con eficacia." },
+      { "value": "b", "text": "Obliga a ser honesto y responsable." },
+      { "value": "c", "text": "Se ignora siempre." }
+    ]
+  },
+  {
+    "id": "q13",
+    "question": "Verdadero o falso: la improvisación no necesita preparación.",
+    "hint": "Incluso la 'improvisación' requiere conocer el tema y tener una estructura mental.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Verdadero." },
+      { "value": "b", "text": "Falso." },
+      { "value": "c", "text": "Solo si hay micrófono." }
+    ]
+  },
+  {
+    "id": "q14",
+    "question": "Menciona una consideración logística a revisar antes de dar un discurso.",
+    "hint": "¿Qué pasaría si llegas y no te oyen o no pueden ver tu presentación?",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "El menú del almuerzo." },
+      { "value": "b", "text": "Equipo técnico (micrófono/proyector)." },
+      { "value": "c", "text": "La lista de invitados." }
+    ]
+  },
+  {
+    "id": "q15",
+    "question": "¿Por qué crear imágenes verbales?",
+    "hint": "Hacer que la gente 'vea' lo que dices en su mente.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Para alargar el discurso." },
+      { "value": "b", "text": "Para aumentar conexión y recuerdo." },
+      { "value": "c", "text": "Para confundir al público." }
+    ]
+  },
+  {
+    "id": "q16",
+    "question": "¿Cómo estructurarías el cuerpo de un informativo con 3 ideas?",
+    "hint": "Cada idea debe tener su propio mini-desarrollo.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Tres ideas sin explicación." },
+      { "value": "b", "text": "Frase tema, explicación y transición para cada idea." },
+      { "value": "c", "text": "Solo datos sueltos." }
+    ]
+  },
+  {
+    "id": "q17",
+    "question": "¿Qué evidencia usarías con un público escéptico?",
+    "hint": "Un público escéptico no cree en 'porque sí'. Necesitan datos duros.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Opiniones sin fuente." },
+      { "value": "b", "text": "Estadísticas confiables y testimonios de expertos." },
+      { "value": "c", "text": "Chismes y rumores." }
+    ]
+  },
+  {
+    "id": "q18",
+    "question": "Recomendación para cerrar un discurso memorable:",
+    "hint": "Debe terminar con fuerza, diciendo al público qué hacer ahora.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Terminar sin conclusión." },
+      { "value": "b", "text": "Llamada a la acción y frase contundente." },
+      { "value": "c", "text": "Repetir la introducción palabra por palabra." }
+    ]
+  },
+  {
+    "id": "q19",
+    "question": "Error frecuente y solución: abrumar con info →",
+    "hint": "Menos es más. Elige solo tus puntos clave.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "Seguir agregando más datos." },
+      { "value": "b", "text": "Limitarse a 2–4 ideas principales." },
+      { "value": "c", "text": "Cambiar de tema cada minuto." }
+    ]
+  },
+  {
+    "id": "q20",
+    "question": "Llamada a la acción ideal para reciclaje (una línea):",
+    "hint": "Una 'Llamada a la acción' debe ser directa y clara.",
+    "correctAnswer": "b",
+    "options": [
+      { "value": "a", "text": "“No importa, no hagas nada.”" },
+      { "value": "b", "text": "“Empieza hoy: separa tus residuos y llévalos al centro.”" },
+      { "value": "c", "text": "“Reciclar es opcional siempre.”" }
+    ]
+  }
+]

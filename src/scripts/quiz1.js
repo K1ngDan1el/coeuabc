@@ -1,75 +1,35 @@
-/* src/scripts/quiz1.js (Con Pistas, Sonidos y Música de Fondo Única) */
+/* src/scripts/quiz1.js (REFACTORIZADO CON JSON) */
 
 // --- CONFIGURACIÓN DEL TIMER ---
-const TOTAL_TIME_SECONDS = 120; // 2 minutos <-- ¡CAMBIO REVERTIDO!
+const TOTAL_TIME_SECONDS = 120; // 2 minutos
 const HINTS_UNLOCK_TIME = TOTAL_TIME_SECONDS / 2;
 // -----------------------------
 
-// --- Textos de las Pistas ---
-const hints = {
-  q1: 'La respuesta menciona "intención comunicativa".',
-  q2: 'Son los tres propósitos clásicos de la oratoria.',
-  q3: 'No es "inicio, mitad, final", eso es muy simple.',
-  q4: 'Una es personal (anécdota) y la otra es una pregunta al aire.',
-  q5: 'Viene de "vicario", que significa "en lugar de otro". Es sentir lo que otro siente.',
-  q6: 'Si quieres informar, no debes dar tu opinión personal.',
-  q7: 'Todo empieza por... ¡llamar la...',
-  q8: 'Necesitas saber a quién le hablas: edad, cultura, y qué piensan.',
-  q9: 'Uno que se da en un funeral, una boda o una celebración.',
-  q10: 'La respuesta está literalmente en las dos palabras.',
-  q11: '¿Qué frase suena más como el inicio de una historia divertida?',
-  q12: 'Persuadir no es lo mismo que manipular.',
-  q13: 'Incluso la "improvisación" requiere conocer el tema y tener una estructura mental.',
-  q14: '¿Qué pasaría si llegas y no te oyen o no pueden ver tu presentación?',
-  q15: 'Hacer que la gente "vea" lo que dices en su mente.',
-  q16: 'Cada idea debe tener su propio mini-desarrollo.',
-  q17: 'Un público escéptico no cree en "porque sí". Necesitan datos duros.',
-  q18: 'Debe terminar con fuerza, diciendo al público qué hacer ahora.',
-  q19: 'Menos es más. Elige solo tus puntos clave.',
-  q20: 'Una "Llamada a la acción" debe ser directa y clara.'
-};
-
 // === INICIO: AÑADIR SONIDOS ===
-// Efectos de Sonido
 const soundCorrect = new Audio('/Sounds/sonido-correcto.mp3');
 const soundIncorrect = new Audio('/Sounds/sonido-incorrecto.mp3');
 const soundTimeUp = new Audio('/Sounds/tiempo-fuera.mp3');
 const soundWarning = new Audio('/Sounds/advertencia.mp3');
-
-// === MÚSICA DE FONDO: Carga el archivo ===
-const musicBackground = new Audio('/Sounds/musica-fondo.mp3'); 
+const musicBackground = new Audio('/Sounds/musica-fondo.mp3');
 musicBackground.loop = false;
 musicBackground.volume = 0.5;
-
-let isMusicStarted = false; 
+let isMusicStarted = false;
 // === FIN: AÑADIR SONIDOS ===
 
 
-// --- Elementos del Quiz ---
-const answers = {
-  q1: 'c', q2: 'b', q3: 'c', q4: 'b', q5: 'b',
-  q6: 'b', q7: 'b', q8: 'b', q9: 'b', q10: 'a',
-  q11: 'b', q12: 'b', q13: 'b', q14: 'b', q15: 'b',
-  q16: 'b', q17: 'b', q18: 'b', q19: 'b', q20: 'b'
-};
-
+// --- Variables Globales del Quiz ---
+let quizData = []; // Aquí se cargarán las preguntas del JSON
 let score = 0;
-const totalQuestions = Object.keys(answers).length;
-const resultDiv = document.getElementById('result');
-const resetBtn = document.getElementById('reset-btn');
-const nextBtn = document.getElementById('next-btn');
-const quizContainer = document.getElementById('quiz-container');
-const allOptions = document.querySelectorAll('.option');
-const allQuestions = document.querySelectorAll('.question');
-let currentQuestionIndex = 0; 
-
-// --- Elementos del Timer ---
-const timerBar = document.getElementById('timer-bar');
-const timerBarDelay = document.getElementById('timer-bar-delay'); // <-- ¡NUEVO!
-const timerText = document.getElementById('timer-text');
-let timeLeft = TOTAL_TIME_SECONDS;
-let timerInterval = null;
+let totalQuestions = 0;
+let currentQuestionIndex = 0;
 let hintsUnlocked = false;
+let timerInterval = null;
+let timeLeft = TOTAL_TIME_SECONDS;
+
+// --- Elementos del DOM (declarados pero vacíos) ---
+let resultDiv, resetBtn, nextBtn, quizContainer, quizForm;
+let timerBar, timerBarDelay, timerText;
+let allOptions, allQuestions, allHintButtons; // Se llenarán después de cargar el HTML
 
 // --- FUNCIONES DEL TIMER ---
 function startTimer() {
@@ -78,7 +38,7 @@ function startTimer() {
   isMusicStarted = false; 
   currentQuestionIndex = 0;
   if (timerInterval) clearInterval(timerInterval);
-  updateTimerDisplay(); // Llama una vez para setear el 100% inicial
+  updateTimerDisplay(); 
   checkTimeEffects();
   showQuestion(currentQuestionIndex);
 
@@ -87,7 +47,7 @@ function startTimer() {
   if (timerBarDelay) timerBarDelay.style.transition = 'none';
   updateTimerDisplay();
 
-  // Forzamos un reflow para que la próxima transición sí ocurra
+  // Forzamos un reflow
   void timerBar.offsetWidth;
   void timerBarDelay.offsetWidth;
   
@@ -95,19 +55,16 @@ function startTimer() {
   if (timerBar) timerBar.style.transition = 'background-color 0.5s ease';
   if (timerBarDelay) timerBarDelay.style.transition = 'width 0.5s linear';
 
-
   timerInterval = setInterval(() => {
     timeLeft--;
     updateTimerDisplay();
     checkTimeEffects();
 
-    // === MÚSICA DE FONDO: Inicia a los 85 segundos ===
     if (timeLeft === 85 && !isMusicStarted) {
         musicBackground.play().catch(e => console.error("Error al iniciar música:", e));
         isMusicStarted = true;
     }
-    // === FIN: Inicio de música ===
-
+    
     if (!hintsUnlocked && timeLeft <= HINTS_UNLOCK_TIME) {
       unlockHints();
     }
@@ -124,11 +81,11 @@ function stopTimer() {
 }
 
 function updateTimerDisplay() {
-  if (!timerBar || !timerText || !timerBarDelay) return; // <-- ¡NUEVO!
+  if (!timerBar || !timerText || !timerBarDelay) return; 
   const percentage = (timeLeft / TOTAL_TIME_SECONDS) * 100;
   
-  timerBar.style.width = percentage + '%'; // Barra verde (actualiza rápido)
-  timerBarDelay.style.width = percentage + '%'; // Barra blanca (sigue con delay por CSS)
+  timerBar.style.width = percentage + '%'; 
+  timerBarDelay.style.width = percentage + '%'; 
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
@@ -141,26 +98,54 @@ function checkTimeEffects() {
     quizContainer.classList.remove('timer-warning');
     quizContainer.classList.add('timer-danger');
     if (timerBar) timerBar.style.background = 'linear-gradient(90deg, #dc3545, #f85768)';
-    
-    if (timeLeft === 20) { // Suena solo una vez al llegar a 20
-        soundWarning.play();
-    }
-    
+    if (timeLeft === 20) soundWarning.play();
   } else if (timeLeft <= 60) {
     quizContainer.classList.add('timer-warning');
     if (timerBar) timerBar.style.background = 'linear-gradient(90deg, #ffc107, #ffeb3b)';
-    
-    if (timeLeft === 60) { // Suena solo una vez al llegar a 60
-        soundWarning.play();
-    }
-
+    if (timeLeft === 60) soundWarning.play();
   } else {
     quizContainer.classList.remove('timer-warning', 'timer-danger');
     if (timerBar) timerBar.style.background = 'linear-gradient(90deg, #28a745, #5cdd7c)';
   }
 }
 
-// --- FUNCIÓN PARA MOSTRAR PREGUNTA ---
+// --- FUNCIONES DEL QUIZ ---
+
+/**
+ * Genera el HTML de todas las preguntas desde el JSON
+ * y lo inserta en el DOM.
+ */
+function buildQuizHTML() {
+  let html = '';
+
+  quizData.forEach((question, index) => {
+    // Genera el HTML para las opciones
+    const optionsHTML = question.options.map(opt => `
+      <label class="option" data-question="${question.id}" data-value="${opt.value}">
+        <input type="radio" name="${question.id}" value="${opt.value}">
+        <span class="option-content">${opt.text}</span>
+      </label>
+    `).join('');
+
+    // Genera el HTML para la pregunta completa
+    html += `
+      <div class="question hidden">
+        <div class="question-inner">
+          <p><span class="question-number">${index + 1}</span>${question.question}</p>
+          ${optionsHTML}
+          <button class="hint-btn" data-hint="${question.id}" disabled>💡</button>
+          <p class="hint-text" id="hint-${question.id}"></p>
+        </div>
+      </div>
+    `;
+  });
+
+  quizForm.innerHTML = html;
+}
+
+/**
+ * Muestra la pregunta actual y oculta las demás.
+ */
 function showQuestion(index) {
   allQuestions.forEach((question, i) => {
     if (i === index) {
@@ -171,11 +156,12 @@ function showQuestion(index) {
   });
 }
 
-// --- FUNCIÓN DE PISTAS (Modificada) ---
+/**
+ * Desbloquea los botones de pista.
+ */
 function unlockHints() {
   hintsUnlocked = true;
-  const hintButtons = document.querySelectorAll('.hint-btn');
-  hintButtons.forEach(btn => {
+  allHintButtons.forEach(btn => {
     const questionDiv = btn.closest('.question');
     const firstOption = questionDiv.querySelector('.option');
     if (!firstOption.classList.contains('disabled')) {
@@ -185,55 +171,57 @@ function unlockHints() {
   });
 }
 
-// --- FUNCIÓN DE MOSTRAR PISTA (¡MODIFICADA!) ---
+/**
+ * Muestra la pista para una pregunta.
+ * ¡MODIFICADO para leer de quizData!
+ */
 function showHint(event) {
-  event.preventDefault(); // Evita que el form se envíe
+  event.preventDefault(); 
   const btn = event.target;
   const qKey = btn.dataset.hint;
-  const hintText = hints[qKey];
   
-  // Busca el elemento <p class="hint-text"> que corresponde a este botón
+  // Busca la pista en nuestros datos cargados
+  const questionData = quizData.find(q => q.id === qKey);
+  const hintText = questionData ? questionData.hint : "Pista no encontrada.";
+  
   const hintElement = document.getElementById(`hint-${qKey}`);
   
-  // Ya no usamos alert(), ahora ponemos el texto
   if (hintElement) {
     hintElement.textContent = hintText;
-    hintElement.classList.add('visible'); // Lo hace aparecer
+    hintElement.classList.add('visible'); 
   }
   
   btn.disabled = true;
   btn.classList.remove('unlocked');
 }
 
-// --- FUNCIONES DEL QUIZ (Modificadas) ---
+/**
+ * Comprueba la respuesta seleccionada.
+ * ¡MODIFICADO para leer de quizData!
+ */
 function checkAnswer(questionName, selectedValue, optionElement) {
-  
   if (!timerInterval) return;
 
-  const correctAnswer = answers[questionName];
+  // Busca la respuesta correcta en nuestros datos
+  const questionData = quizData.find(q => q.id === questionName);
+  const correctAnswer = questionData.correctAnswer;
+  
   const questionOptions = document.querySelectorAll(`[data-question="${questionName}"]`);
   
-  // Deshabilita opciones de la pregunta actual
   questionOptions.forEach(opt => {
     opt.classList.add('disabled');
     opt.style.pointerEvents = 'none';
-  });
-  
-  // Muestra la respuesta correcta
-  questionOptions.forEach(opt => {
     if (opt.dataset.value === correctAnswer) {
       opt.classList.add('correct');
     }
   });
 
-  // Deshabilita el botón de pista
   const hintBtn = optionElement.closest('.question').querySelector('.hint-btn');
   if (hintBtn) {
     hintBtn.disabled = true;
     hintBtn.classList.remove('unlocked');
   }
   
-  // Marca incorrecta si es necesario y actualiza score
   if (selectedValue !== correctAnswer) {
     optionElement.classList.add('incorrect');
     soundIncorrect.play();
@@ -242,15 +230,13 @@ function checkAnswer(questionName, selectedValue, optionElement) {
     soundCorrect.play();
   }
   
-  // --- LÓGICA DE AVANCE AUTOMÁTICO ---
-  // Espera 1 segundo (1000ms) antes de pasar a la siguiente
+  // Lógica de avance automático
   setTimeout(() => {
-    currentQuestionIndex++; // Avanza a la siguiente pregunta
-    
+    currentQuestionIndex++; 
     if (currentQuestionIndex < totalQuestions) {
-      showQuestion(currentQuestionIndex); // Muestra la siguiente pregunta
+      showQuestion(currentQuestionIndex); 
     } else {
-      showFinalResult(false); // Si no hay más, muestra el resultado
+      showFinalResult(false); 
     }
   }, 1000); 
 }
@@ -258,11 +244,9 @@ function checkAnswer(questionName, selectedValue, optionElement) {
 function showFinalResult(isTimeUp) {
   stopTimer(); 
   
-  // === MÚSICA DE FONDO: Detiene toda la música ===
   musicBackground.pause();
   musicBackground.currentTime = 0;
   isMusicStarted = false;
-  // === FIN: Detener música ===
   
   let emoji = '🎉';
   let message = '¡Genial!';
@@ -287,38 +271,36 @@ function showFinalResult(isTimeUp) {
     message = '¡Sigue practicando!';
   }
   
-  if (resultDiv) {
-    resultDiv.innerHTML = `
-      <span class="score-emoji">${emoji}</span>
-      ${message}<br>
-      Puntaje: ${score}/${totalQuestions} (${percentage.toFixed(0)}%)
-    `;
-    resultDiv.style.display = 'block';
-  }
+  resultDiv.innerHTML = `
+    <span class="score-emoji">${emoji}</span>
+    ${message}<br>
+    Puntaje: ${score}/${totalQuestions} (${percentage.toFixed(0)}%)
+  `;
+  resultDiv.style.display = 'block';
   
   allOptions.forEach(opt => {
     opt.classList.add('disabled');
     opt.style.pointerEvents = 'none';
   });
 
-  if (resetBtn) resetBtn.style.display = 'block';
-  if (nextBtn) nextBtn.style.display = 'block';
-  if (nextBtn) nextBtn.disabled = isTimeUp || !passed;
+  resetBtn.style.display = 'block';
+  // nextBtn.style.display = 'block'; // Descomenta si quieres un botón de "siguiente"
+  // nextBtn.disabled = isTimeUp || !passed;
 
-  if (resultDiv) resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// --- FUNCIÓN DE RESET (¡MODIFICADA!) ---
+/**
+ * Reinicia el quiz al estado inicial.
+ */
 function resetQuiz() {
-  // === MÚSICA DE FONDO: Resetea la música ===
   musicBackground.pause();
   musicBackground.currentTime = 0;
-  isMusicStarted = false; // Se prepara para el próximo inicio en 120s
-  // === FIN: Reseteo de música ===
+  isMusicStarted = false; 
 
   score = 0;
   
-  if (nextBtn) nextBtn.disabled = false;
+  // if (nextBtn) nextBtn.disabled = false; // Descomenta si usas el botón nextBtn
 
   allOptions.forEach(opt => {
     opt.classList.remove('correct', 'incorrect', 'disabled');
@@ -327,31 +309,63 @@ function resetQuiz() {
     if (radio) radio.checked = false;
   });
 
-  document.querySelectorAll('.hint-btn').forEach(btn => {
+  allHintButtons.forEach(btn => {
     btn.disabled = true;
     btn.classList.remove('unlocked');
   });
   
-  // Limpia el texto de las pistas
   document.querySelectorAll('.hint-text').forEach(el => {
     el.textContent = '';
     el.classList.remove('visible');
   });
   
-  if (resultDiv) resultDiv.style.display = 'none';
-  if (resetBtn) resetBtn.style.display = 'none';
-  if (nextBtn) nextBtn.style.display = 'none';
+  resultDiv.style.display = 'none';
+  resetBtn.style.display = 'none';
+  // nextBtn.style.display = 'none'; // Descomenta si usas el botón nextBtn
   
-  if (quizContainer) quizContainer.classList.remove('timer-warning', 'timer-danger');
+  quizContainer.classList.remove('timer-warning', 'timer-danger');
   
   startTimer(); 
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// --- INICIO Y EVENTOS ---
-document.addEventListener('DOMContentLoaded', (event) => {
-  document.querySelectorAll('.option').forEach(option => {
+/**
+ * Función principal de inicialización
+ */
+async function initQuiz() {
+  // 1. Asignar elementos principales del DOM
+  resultDiv = document.getElementById('result');
+  resetBtn = document.getElementById('reset-btn');
+  nextBtn = document.getElementById('next-btn'); // Aunque no lo uses, lo asignamos
+  quizContainer = document.getElementById('quiz-container');
+  quizForm = document.getElementById('quiz-form');
+  timerBar = document.getElementById('timer-bar');
+  timerBarDelay = document.getElementById('timer-bar-delay');
+  timerText = document.getElementById('timer-text');
+  
+  // 2. Cargar los datos del JSON
+  try {
+    const response = await fetch('/quiz-data.json');
+    if (!response.ok) throw new Error('No se pudo cargar quiz-data.json');
+    quizData = await response.json();
+    totalQuestions = quizData.length;
+  } catch (error) {
+    console.error("Error al cargar el quiz:", error);
+    quizForm.innerHTML = "<p>Error al cargar las preguntas. Intenta recargar la página.</p>";
+    return;
+  }
+
+  // 3. Construir el HTML del quiz
+  buildQuizHTML();
+
+  // 4. Asignar elementos generados dinámicamente
+  allOptions = document.querySelectorAll('.option');
+  allQuestions = document.querySelectorAll('.question');
+  allHintButtons = document.querySelectorAll('.hint-btn');
+
+  // 5. Asignar todos los eventos
+  allOptions.forEach(option => {
     option.addEventListener('click', function(e) {
       if (this.classList.contains('disabled')) return;
       const radio = this.querySelector('input[type="radio"]');
@@ -364,18 +378,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
   });
 
-  const resetBtnEl = document.getElementById('reset-btn');
-  const nextBtnEl = document.getElementById('next-btn');
+  resetBtn.addEventListener('click', resetQuiz);
+  // nextBtn.addEventListener('click', () => { ... });
 
-  if (resetBtnEl) resetBtnEl.addEventListener('click', resetQuiz);
-  if (nextBtnEl) nextBtnEl.addEventListener('click', () => {
-    alert('Función "Siguiente" - Aquí puedes redirigir');
-  });
-
-  // Eventos de Botones de Pista
-  document.querySelectorAll('.hint-btn').forEach(btn => {
+  allHintButtons.forEach(btn => {
     btn.addEventListener('click', showHint);
   });
-  
+
+  // 6. Iniciar el timer
   startTimer();
-});
+}
+
+// --- INICIO Y EVENTOS ---
+// Espera a que el DOM esté listo y luego llama a la función principal
+document.addEventListener('DOMContentLoaded', initQuiz);
